@@ -1,0 +1,17 @@
+{
+  "rest": {
+    "RestGenerator": {
+      "name": "vuln-rag-001",
+      "uri": "http://localhost:8000/chat",
+      "method": "post",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "req_template_json_object": {
+        "message": "$INPUT"
+      },
+      "response_json": true,
+      "response_json_field": "response"
+    }
+  }
+}
