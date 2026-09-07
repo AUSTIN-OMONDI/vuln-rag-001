@@ -9,6 +9,15 @@ against a target with known ground truth.
 > it to a network, point it at systems you do not own, or reuse its patterns in
 > production. Run it locally, in an isolated environment.
 
+> **Companion lab.** This is the **retrieval** lab: direct extraction is refused,
+> and a poisoned document succeeds from an entirely benign user query.
+> Its counterpart,
+> **[vuln-rag-001-ai-redteam-lab](https://github.com/AUSTIN-OMONDI/vuln-rag-001-ai-redteam-lab)**,
+> is the **tool-abuse** lab (LangChain + ChromaDB, tool-enabled agent), where the
+> result inverts: direct injection escalates to file read and `.env`
+> exfiltration, while document poisoning fails against retrieval ranking.
+> The same payload class succeeds or fails on architecture, not on wording.
+
 ## Stack
 - FastAPI (`/chat` and `/poison` endpoints)
 - OpenAI (gpt-3.5-turbo) via the official SDK
