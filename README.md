@@ -4,14 +4,42 @@ An intentionally vulnerable Retrieval-Augmented Generation (RAG) service, built
 as a security-research lab to study and demonstrate LLM application attacks
 against a target with known ground truth.
 
-> ⚠️ **Intentionally insecure. Educational use only.** Do not deploy, expose to
-> the internet, or reuse these patterns in production.
+> ⚠️ **Intentionally insecure. Educational use only.**
+> This repository contains deliberate security flaws. Do not deploy it, expose
+> it to a network, point it at systems you do not own, or reuse its patterns in
+> production. Run it locally, in an isolated environment.
 
 ## Stack
 - FastAPI (`/chat` and `/poison` endpoints)
 - OpenAI (gpt-3.5-turbo) via the official SDK
 - In-memory keyword "retrieval" (deliberately minimal, to keep the attack
   surface legible)
+
+## Architecture
+
+```mermaid
+flowchart TD
+    POISON["POST /poison<br/>unauthenticated"]
+    DOCS["Document store"]
+    Q["Benign user question"]
+    RET["Keyword retrieval"]
+    SYS["System prompt<br/>contains SECRET"]
+    CTX["CONTEXT + QUESTION<br/>concatenated, no trust boundary"]
+    LLM["gpt-3.5-turbo"]
+    OUT["Response leaks SECRET"]
+
+    POISON --> DOCS
+    DOCS --> RET
+    Q --> RET
+    RET --> CTX
+    SYS --> CTX
+    CTX --> LLM
+    LLM --> OUT
+```
+
+An attacker never talks to the model. They write one document; a legitimate
+user's benign query retrieves it, and the injected instruction is executed with
+the authority of the system prompt.
 
 ## Implemented vulnerabilities
 These are present in the code and have documented, reproducible exploits.
@@ -59,3 +87,7 @@ uvicorn app.main:app --port 8000
 ## Mappings
 OWASP LLM01 (Prompt Injection), LLM07 (System Prompt Leakage);
 MITRE ATLAS AML.T0051 (LLM Prompt Injection).
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
